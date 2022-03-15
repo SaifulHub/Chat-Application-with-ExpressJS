@@ -3,12 +3,13 @@ const dotenv = require("dotenv");
 const mongoose = require("mongoose");
 const path = require("path");
 const cookieParser = require("cookie-parser");
+const loginRouter = require("./router/loginRouter");
 
 // internal imports
 const {
   notFoundHandler,
   errorHandler,
-} = require(".middleware/common/errorHanlder");
+} = require("./middleware/common/errorHanlder");
 
 const app = express();
 dotenv.config();
@@ -36,10 +37,15 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(cookieParser(process.env.COOKIE_SECRET));
 
 // setup Routes
+app.use("/", loginRouter);
+app.use("/user", userRouter);
+app.use("inbox", inboxRouter);
 
 // 404 not found handler
+app.use(notFoundHandler);
 
 // Error Handling
+app.use(errorHandler);
 
 // Listen Port
 app.listen(process.env.PORT, () => {
